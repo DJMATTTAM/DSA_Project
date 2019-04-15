@@ -1,0 +1,15 @@
+/*
+ * Purpose: Data Structure and Algorithms Project
+ * Status: Barely Started
+ * Last update: 04/04/19
+ * Submitted:  04/04/19
+ * Comment: test suite and sample run attached
+ * @author: Matthew Tam and Chris Ancheta
+ * @version: 04/04/19
+ */
+public class QueueException extends RuntimeException {
+
+    public QueueException(String s) {
+        super(s);
+    }  // end constructor
+}  // end QueueException
