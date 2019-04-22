@@ -27,7 +27,7 @@ public class Group {
 		return size;
 	}
 
-	public boolean isUnderEleven() {
+	public boolean getKids() {
 		return underEleven;
 	}
 
