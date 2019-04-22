@@ -9,34 +9,22 @@
  */
 public class Room {
 
-	private ListRA<Group> seats;
+	private ListRA<Group> seats = new ListRA<Group>();
 	private int cols;
 	private int rows;
 	private String movieName;
-	private int occupancy;
+	private int occupancy = 0;
 	
-	
-	
-	public Room(ListRA<Group> seats, int cols, int rows, String movieName, int occupancy) {
+	public Room(int cols, int rows, String movieName) {
 		super();
-		this.seats = seats;
-		this.cols = cols;
-		this.rows = rows;
-		this.movieName = movieName;
-		this.occupancy = occupancy;
-	}
-	
-	public Room(ListRA<Group> seats, int cols, int rows, String movieName) {
-		super();
-		this.seats = seats;
 		this.cols = cols;
 		this.rows = rows;
 		this.movieName = movieName;
 		this.occupancy = 0;
 	}
 
-    public static int sequentialSearch(String sk, ListRA<Group> list) {
-    	int listSize = list.size();
+    public int sequentialSearch(String sk) {
+    	int listSize = seats.size();
     	int result = -1; //Unsuccessful by default
     	boolean done = false;
     	
@@ -44,7 +32,7 @@ public class Room {
     		/*DEBUG
     		System.out.println(sk + " == " + list.get(i));
     		//*/
-    		if ( sk.equals(list.get(i).getName())) {
+    		if ( sk.equals(seats.get(i).getName())) {
     			result = i;
     			done = true;  //If a match is found, stop the loop and return the value.
     		}
@@ -61,7 +49,7 @@ public class Room {
 	
 	public Group removeGroup (Group customer) throws ListException {
 		Group result = null;
-		int index = sequentialSearch(customer.getName(), seats);
+		int index = sequentialSearch(customer.getName());
 		
 		switch (index) {
 		case -1:
@@ -105,12 +93,13 @@ public class Room {
 	
 	public static void main(String[] args) {
 		
-		Group test = new Group("test", 5, true);
+		Group group1 = new Group("test", 2, true);
+		Group group2 = new Group("test", 3, true);
 		
-		ListRA<Group> groups = new ListRA<Group>();
-		groups.add(0, test);
+		Room movie = new Room(3, 3, "Spiderman");
 		
-		Room movie = new Room(groups, 3, 3, "Spiderman", 4);
+		movie.addGroup(group1);
+		movie.addGroup(group2);
 		
 		System.out.println(movie);
 	}
