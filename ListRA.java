@@ -10,7 +10,7 @@
 // ********************************************************
 // Array-based implementation of the ADT list.
 // *********************************************************
-public class ListA<T> implements ListInterface<T>
+public class ListRA<T> implements ListInterface<T>
 {
 
     private static final int DEFAULTSIZE = 120;
@@ -18,14 +18,14 @@ public class ListA<T> implements ListInterface<T>
     protected T []items;  // an array of list items
     protected int numItems;  // number of items in list
 
-    public ListA()
+    public ListRA()
     {
     	size = DEFAULTSIZE;
         items = (T[]) new Object[size];
         numItems = 0;
     }  // end default constructor
     
-    public ListA(int customSize)
+    public ListRA(int customSize)
     {
     	size = customSize;
         items = (T[]) new Object[size];
@@ -57,7 +57,14 @@ public class ListA<T> implements ListInterface<T>
             //fixes implementation errors
             //fixes programming style
         {
-            throw new ListException("ListException on add");
+        	Object[] newItems = new Object[numItems*(3/2) + 1];
+			
+			for(int i = 0; i < numItems; i++){ //Only needs to fill entries should be null by default.
+				newItems[i] = items[i]; //fills the new array with elements from the old array
+			}
+			
+			items = (T[]) newItems;
+            //throw new ListException("ListException on add");
         }  // end if
         if (index >= 0 && index <= numItems)
         {
