@@ -7,15 +7,13 @@
  * @author: Matthew Tam and Chris Ancheta
  * @version: 04/04/19
  */
-public class Group extends Room {
+public class Group {
 	
 	private String name;
 	private int size;
 	private boolean underEleven;
 	
-	public Group(ListRA<Group> seats, int cols, int rows, String movieName, int occupancy, String name, int size,
-			boolean underEleven) {
-		super(seats, cols, rows, movieName, occupancy);
+	public Group(String name, int size, boolean underEleven) {
 		this.name = name;
 		this.size = size;
 		this.underEleven = underEleven;
