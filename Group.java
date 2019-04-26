@@ -33,7 +33,8 @@ public class Group {
 
 	@Override
 	public String toString() {
-		return "Group [name=" + name + ", size=" + size + ", underEleven=" + underEleven + "]";
+		//return "Group [name=" + name + ", size=" + size + ", underEleven=" + underEleven + "]";
+		return "Name: " + name + " Group Size: " + size;
 	}
 	
 }

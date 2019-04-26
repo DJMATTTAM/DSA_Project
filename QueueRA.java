@@ -88,15 +88,16 @@ public class QueueRA<T> implements QueueInterface<T> {
 
     @Override
     public String toString() {
-        StringBuilder result;
-
-        result = new StringBuilder();
-
+        StringBuilder result = new StringBuilder("");
         for(int i = 0; i < numItems; i++) {
             result.append(items[(front + i) % items.length].toString());
             result.append("\n");
         }
 
         return result.toString();
+    }
+    
+    public int size() {
+    	return numItems;
     }
 }

@@ -1,3 +1,4 @@
+
 /*
  * Purpose: Data Structure and Algorithms Project
  * Status: Barely Started
@@ -7,294 +8,187 @@
  * @author: Matthew Tam and Chris Ancheta
  * @version: 04/04/19
  */
+
 import java.io.*;
-import java.lang.*;
 
 public class Driver {
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    static BufferedReader stdin = new BufferedReader (new InputStreamReader(System.in));
+	public static void main(String[] args) {
+		Theater theTheater = setup();
+		boolean prompt = true;
+		menu();
+		while (true) {
+			prompt = select(theTheater, prompt);
+		}
+	}
 
-    public static int stdinInt(String prompt) throws Exception
-    {
-        return stdinInt(prompt, "Invalid Input - Please enter a valid integer.");
-    }
+	private static Theater setup() {
+		int rows;
+		int cols;
+		double price;
+		System.out.print("Enter number of rows in each theater room: ");
+		rows = Integer.parseInt(getInput());
+		System.out.print("Enter number of seats per row: ");
+		cols = Integer.parseInt(getInput());
+		System.out.print("Enter ticket price: ");
+		price = Double.parseDouble(getInput());
+		return new Theater(rows, cols, price);
+	}
 
-    public static int stdinInt(String prompt, String error) throws Exception {
-        /* Takes input from the BufferedReader stdin and assumes that the string entered
-         * is an integer.  If not, catches the error and asks the user for a proper integer.
-         *
-         * Converts the string into a number and passes that number.
-         */
-        int num = -1;
+	// Display a list of menu options
+	private static void menu() {
 
-        try {
-            System.out.print(prompt);
-            num = Integer.parseInt(stdin.readLine().replaceAll("\\s+",""));//Remove whitespaces with RegEx0
-            System.out.println(num);
-            /*DEBUG
-            	System.out.println("Non-negative mode: " + nonneg);
-            	System.out.println(num);
-            //*/
-        } catch (Exception e) {
-            //If the user enters a non integer, returns this message.
-            //System.out.println(error);
-        	throw new Exception(e);
-        }
+		System.out.print("Select from the following menu:\n" 
+				+ "\t0. Exit the program. \n"
+				+ "\t1. Customer(s) enter(s) Movie Theater. \n" 
+				+ "\t2. Customer buys ticket(s).\n"
+				+ "\t3. Customer(s) leave(s) the theater.\n"
+				+ "\t4. Display info about customers waiting for tickets.\n"
+				+ "\t5. Display seating chart for Shazam! Movie Theater.\n"
+				+ "\t6. Display seating chart for Dumbo Movie Theater.\n"
+				+ "\t7. Display number of tickets sold and total earnings.\n");
+	}
 
-        return num;
-    }
+	// Process users menu selection and perform the required tasks
+	// updating the user with results or errors
+	private static boolean select(Theater theTheater, boolean prompt) {
+		String selection = "";
+		Group customer = null;
+		int groupSize = 0;
+		boolean kids = false;
 
-    public static String stdinString(String prompt) {
-        /* Takes input from the BufferedReader stdin.
-         *
-         * If there's an error catches the error and asks the user for a proper input.
-         *
-         * Passes the entered string.
-         */
-        String string = "";
+		System.out.print("\nMake your menu selection now: ");
+		System.out.println(selection = getInput());
 
-        try {
-            System.out.print(prompt);
-            string = stdin.readLine().trim();
-            System.out.println(string);
-            /*DEBUG
-            	System.out.println(string);
-            //*/
-            return string;
-        } catch (Exception e) {
-            //If the user enters an invalid input, returns this message.
-            System.out.println("Invalid Input - Please enter a valid input.");
-        }
-        return string;
-    }
+		switch (selection) {
+		// Customer enters -- Ask for name until unique name is entered
+		// Ask user for group size
+		// Ask user if there are kids < 11 years old
+		// Place them in the line that will yield the shortest wait
+		case "1":
+			boolean done = false;
+			String name = "";
+			System.out.print("Welcome!\nPlease enter your name: ");
+			while (!done) { // prompt user for name until unique name is entered
+				try {
+					name = getInput();
+					theTheater.addName(name);
+					done = true;
+				} catch (ListException e) {
+					System.out.print(e.getMessage() + "\nEnter a different name: ");
+				}
+			}
+			System.out.print("Enter number of people in group: ");
+			groupSize = Integer.parseInt(getInput());
+			System.out.print("Is anyone in the group under 11 years old y/n? ");
+			selection = getInput();
+			kids = selection.equalsIgnoreCase("y") ? true : false;
+			theTheater.enter(new Group(name, groupSize, kids));
+			break;
+		/*
+		 * Customer buys ticket On first use have user choose which line to serve first.
+		 * Prompt user to select a movie and continue if there's room otherwise ask user
+		 * if they'd like to watch the other movie. If yes continue if there's room, if
+		 * no room or answer is no the customer leaves.
+		 */
+		case "2":
+			String movie1 = "";
+			String movie2 = "";
+			if (prompt) {
+				lineSetup(); // Initial setup of which line to serve first chosen by the user
+				selection = getInput();
+				customer = theTheater.serveCustomer(Integer.parseInt(selection));
+				prompt = false;
+			} else {
+				customer = theTheater.serveCustomer();
+			}
 
-    public static <T> void openInterface(StackRA<Request> pending, QueueRA<Request> give, QueueRA<Request> get) throws Exception {
-    	
-    	System.out.println("Welcome to the Pokemon Exchange Center!");
-    	
-    	int customersThatLeft = 0;
-    	
-    	//Stock:
-    	int ghost = stdinInt("Enter number of Ghost Pokemon in stock: ");
-    	int fire = stdinInt("Enter number of Fire Pokemon in stock: ");
-    	int ice = stdinInt("Enter number of Ice Pokemon in stock: ");
-    	
-        System.out.print(new StringBuilder()
-                         .append("Select from the following menu:\n")
-                         .append("\t 0. Exit the program.\n")
-                         .append("\t 1. Customer enters.\n")
-                         .append("\t 2. Customer giving Pokemon is served.\n")
-                         .append("\t 3. Customer getting Pokemon is served.\n")
-                         .append("\t 4. Employee Processes pending requests.\n")
-                         .append("\t 5. Display customers waiting to give Pokemon and their requests.\n")
-                         .append("\t 6. Display customers waiting to get Pokemon and their requests.\n")
-                         .append("\t 7. Display pending requests.\n")
-                         .append("\t 8. Display stock and number of customers that have left.\n")
-                        );
+			if (customer == null) {
+				System.out.println("All lines are empty.");
+			} else {
+				System.out.print("Which movie would you like to see?" + customer.getName() + "\n\t1. Shazam!\n"
+						+ "\t2. Dumbo\n" + "Make your selection now: ");
+				selection = getInput();
+				if (selection.equals("1")) {
+					movie1 = "Shazam!";
+					movie2 = "Dumbo";
+				} else {
+					movie1 = "Dumbo";
+					movie2 = "Shazam!";
+				}
+				try {
+					theTheater.purchaseTicket(customer, movie1);
+					System.out.println("Enjoy the show!");
+				} catch (ListException e1) {
+					System.out.print(e1.getMessage() + "\nWould you like to see " + movie2 + " instead Y/N? : ");
+					selection = getInput();
+					if (selection.equalsIgnoreCase("y")) {
+						try {
+							theTheater.purchaseTicket(customer, movie2);
+							System.out.println("Enjoy the show!");
+						} catch (ListException e2) {
+							System.out.print(e2.getMessage() 
+									+ "\nNo other movies available. "
+									+ customer.getName() + " leaves.");
+							theTheater.removeName(customer.getName());
+						}
+					} else {
+						System.out.println(customer.getName() + " leaves.");
+						theTheater.removeName(customer.getName());
+					}
+				}
+			}
+			break;
+		// Customer leaves
+		case "3":
+			System.out.print("Enter a name: ");
+			selection = getInput();
+			try {
+				System.out.println("Bye " + theTheater.leave(selection).getName());
+			} catch (ListException e) {
+				System.out.println(e.getMessage());
+			}
+			break;
+		case "4":
+			System.out.println(theTheater.displayLines());
+			break;
+		case "5":
+			System.out.println(theTheater.getSeatingChart("shazam!"));
+			break;
+		case "6":
+			System.out.println(theTheater.getSeatingChart("dumbo"));
+			break;
+		case "7":
+			System.out.println("Tickets sold = " + theTheater.getTicketsSold()
+								+ "\nTicket Earnings = " + theTheater.getEarnings());
+			break;
+		case "0":
+			System.out.println("Exiting . . .");
+			System.exit(0);
+			break;
+		default: // User input an invalid menu option
+			System.out.println("Selection not valid");
+			menu();
+			break;
+		}
+		return prompt;
+	}
 
-        boolean stay = true;
+	private static void lineSetup() {
+		System.out.print("Select the first line to serve:\n" + "\t0. Express\n" + "\t1. Reg1\n" + "\t2. Reg2\n"
+				+ "Enter your selection now: ");
+	}
 
-        Request request = null;
-        
-        String name = "";
-        boolean giveOrGetInput = true; //True = Give, False = Get
-        String giveOrGetToString = "give";
-        int customerGhost = 0;
-        int customerFire = 0;
-        int customerIce = 0;
-        
-        while(stay) {
-            switch(stdinInt("Make your menu selection now: ")) {
-            case 0:
-            	System.out.println("The Pokemon Exchange Center is closing :Good Bye...");
-            	stay = false;
-            	break;
-            case 1:
-                try {
-                    name = stdinString("Welcome, your name please: ");
-                    if (stdinString("Are you here to give Pokemon(Y/N): ").toUpperCase().equals("Y")) {
-                    	giveOrGetInput = true;
-                    	giveOrGetToString = "give";
-                    } else {
-                    	giveOrGetInput = false;
-                    	giveOrGetToString = "get";
-                    }
-                    customerGhost = stdinInt("How many Ghost Pokemon: ");
-                    customerFire = stdinInt("How many Fire Pokemon: ");
-                    customerIce = stdinInt("How many Ice Pokemon: ");
-                    request = new Request(name, giveOrGetInput, customerGhost, customerFire, customerIce);
-                    if (giveOrGetInput) {
-                    	giveOrGetToString = "give";
-                    	give.enqueue(request);
-                    } else {
-                    	giveOrGetToString = "get";
-                    	get.enqueue(request);
-                    }
-                    System.out.println(
-                    		new StringBuilder(name.toString())
-                    		.append(" is now waiting to ")
-                    		.append(giveOrGetToString.toString())
-                    		.append(" Pokemon!")
-                    		.toString());
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                /*DEBUG
-                System.out.print(request);
-                //*/
-                break;
-            case 2:
-            	if (!give.isEmpty()) {
-            		request = give.dequeue();
-            		System.out.println(new StringBuilder(request.getName().toString())
-            				.append(" dropped off ")
-           					.append(String.valueOf(request.getGhost()))
-        					.append(" Ghost, ")
-        					.append(String.valueOf(request.getFire()))
-        					.append(" Fire, ")
-        					.append(String.valueOf(request.getIce()))
-        					.append(" Ice ")
-        					.append("Pokemon.  Thanks!")
-            				.toString());
-            		ghost += request.getGhost();
-            		fire += request.getFire();
-            		ice += request.getIce();
-            		customersThatLeft++;
-            	} else {
-            		System.out.println("No customers giving Pokemon are waiting to be served!");
-            	}
-                break;
-            case 3:
-            	if (!get.isEmpty()) {
-            		request = get.peek();
-            		if ((ghost - request.getGhost()) < 0 ||
-            				fire - request.getFire() < 0 ||
-            				ice - request.getIce() < 0) {
-            			System.out.println(new StringBuilder(request.getName().toString())
-            					.append("'s request: ")
-            					.append(String.valueOf(request.getGhost()))
-            					.append(" Ghost, ")
-            					.append(String.valueOf(request.getFire()))
-            					.append(" Fire, ")
-            					.append(String.valueOf(request.getIce()))
-            					.append(" Ice ")
-            					.append("Pokemon now pending.")
-            					.toString()
-            					);
-            			System.out.println("We will let you know when your order is processed, bye!");
-            			pending.push(get.dequeue());
-            		} else {
-            			System.out.println(new StringBuilder(request.getName().toString())
-            					.append(" leaving with ")
-               					.append(String.valueOf(request.getGhost()))
-            					.append(" Ghost, ")
-            					.append(String.valueOf(request.getFire()))
-            					.append(" Fire, ")
-            					.append(String.valueOf(request.getIce()))
-            					.append(" Ice ")
-            					.append("Pokemon.")
-            					.toString());
-            			
-                		ghost -= request.getGhost();
-                		fire -= request.getFire();
-                		ice -= request.getIce();
-                		get.dequeue();
-            		}
-            		customersThatLeft++;
-            	} else {
-            		System.out.println("No customers getting Pokemon are waiting to be served!");
-            	}
-                break;
-            case 4:
-            	boolean loop = true;
-            	while(loop) {
-	            	if (!pending.isEmpty()) {
-	            		request = pending.peek();
-	        				if ((ghost - request.getGhost()) < 0 ||
-	                				fire - request.getFire() < 0 ||
-	                				ice - request.getIce() < 0) {
-	            				System.out.println("No request could be processed!");
-	            				loop = false;
-	                		} else {
-	                			System.out.println(new StringBuilder(request.getName().toString())
-	                					.append("'s request: ")
-	                					.append(String.valueOf(request.getGhost()))
-	                					.append(" Ghost, ")
-	                					.append(String.valueOf(request.getFire()))
-	                					.append(" Fire, ")
-	                					.append(String.valueOf(request.getIce()))
-	                					.append(" Ice ")
-	                					.append("Pokemon processed and customer notified.")
-	                					.toString()
-	                					);
-	                    		ghost -= request.getGhost();
-	                    		fire -= request.getFire();
-	                    		ice -= request.getIce();
-	                    		pending.pop();
-	                		}
-	            	} else {
-	            		System.out.println("No request could be processed!");
-	            		loop = false;
-	            	}
-            	}
-                break;
-            case 5:
-            	if (!give.isEmpty()) {
-	            	System.out.println("These customers giving Pokemon are waiting to be served: ");
-	            	System.out.println(give.toString());
-            	} else {
-            		System.out.println("No customers giving Pokemon are waiting to be served! ");
-            	}
-                break;
-            case 6:
-            	if (!get.isEmpty()) {
-	            	System.out.println("These customers getting Pokemon are waiting to be served: ");
-	            	System.out.println(get.toString());
-            	} else {
-            		System.out.println("No customers getting Pokemon are waiting to be served! ");
-            	}
-                break;
-            case 7:
-            	if (!pending.isEmpty()) {
-	            	System.out.println("These requests are pending: ");
-	            	System.out.println(pending.toString());
-            	} else {
-            		System.out.println("No pending requests! ");
-            	}
-                break;
-            case 8:
-            	StringBuilder result = new StringBuilder("stock: ")
-            			.append(String.valueOf(ghost))
-            			.append(" Ghosts, ")
-            			.append(String.valueOf(fire))
-            			.append(" Fire, ")
-            			.append(String.valueOf(ice))
-            			.append(" Ice ")
-            			.append("Pokemon\n");
-
-            	if (customersThatLeft == 0) {
-            		result.append("No customers have left");
-            	} else {
-            		result.append(String.valueOf(customersThatLeft));
-            		result.append(" customers have been served.");
-            	}
-            	System.out.println(result.toString());
-                break;
-            default:
-                System.out.println("Please choose a number from the menu above.\n");
-                break;
-            }
-            System.out.println();
-            System.out.print("You know the options.");
-        }
-    }	
-
-    public static void main(String[] args) throws Exception {
-
-    	QueueRA<Customer> lineOne = new QueueRA();
-    	QueueRA<Customer> lineTwo = new QueueRA();
-    	QueueRA<Customer> express = new QueueRA();
-        
-        openInterface(lineOne, lineTwo, express);
-    }
+	// Get user input
+	private static String getInput() {
+		String s = "";
+		try {
+			s = br.readLine().trim();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(s);
+		return s;
+	}// end getInput
 }

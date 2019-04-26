@@ -47,15 +47,16 @@ public class Room {
 		occupancy +=  customer.getSize();
 	}
 	
-	public Group removeGroup (Group customer) throws ListException {
+	public Group removeGroup (String customer) throws ListException {
 		Group result = null;
-		int index = sequentialSearch(customer.getName());
+		int index = sequentialSearch(customer);
 		
 		switch (index) {
 		case -1:
 			throw new ListException("Group not found");
 		default:
 			result = seats.remove(index);
+			occupancy -= result.getSize();
 			break;
 		}
 		
@@ -63,7 +64,7 @@ public class Room {
 	}
     
 	public int getAvailableSeats() {
-		return occupancy;
+		return (rows * cols) - occupancy;
 	}
 	
 	@Override
@@ -91,7 +92,7 @@ public class Room {
 		return result.toString();
 	}
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		Group group1 = new Group("test", 2, true);
 		Group group2 = new Group("test", 3, true);
@@ -102,5 +103,5 @@ public class Room {
 		movie.addGroup(group2);
 		
 		System.out.println(movie);
-	}
+	}*/
 }
