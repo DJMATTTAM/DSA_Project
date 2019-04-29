@@ -4,10 +4,10 @@
  * Last update: 04/29/19
  * Submitted:  04/29/19
  * Comment: test suite and sample run attached
- * @author: Matthew Tam and Chris Ancheta
+ * @author: Matthew Tam
  * @version: 04/29/19
  */
-public class Group {
+public class Group implements GroupInterface {
 	
 	private String name;
 	private int size;
@@ -19,18 +19,33 @@ public class Group {
 		this.underEleven = underEleven;
 	}
 
+	/* (non-Javadoc)
+	 * @see GroupInterface#getName()
+	 */
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	/* (non-Javadoc)
+	 * @see GroupInterface#getSize()
+	 */
+	@Override
 	public int getSize() {
 		return size;
 	}
 
+	/* (non-Javadoc)
+	 * @see GroupInterface#getKids()
+	 */
+	@Override
 	public boolean getKids() {
 		return underEleven;
 	}
 
+	/* (non-Javadoc)
+	 * @see GroupInterface#toString()
+	 */
 	@Override
 	public String toString() {
 		//return "Group [name=" + name + ", size=" + size + ", underEleven=" + underEleven + "]";

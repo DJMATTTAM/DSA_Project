@@ -4,10 +4,10 @@
  * Last update: 04/29/19
  * Submitted:  04/29/19
  * Comment: test suite and sample run attached
- * @author: Matthew Tam and Chris Ancheta
+ * @author: Matthew Tam
  * @version: 04/29/19
  */
-public class Room {
+public class Room implements RoomInterface {
 
 	private ListRA<Group> seats = new ListRA<Group>();
 	private int cols;
@@ -23,7 +23,11 @@ public class Room {
 		this.occupancy = 0;
 	}
 
-    public int sequentialSearch(String sk) {
+    /* (non-Javadoc)
+	 * @see RoomInterface#sequentialSearch(java.lang.String)
+	 */
+    @Override
+	public int sequentialSearch(String sk) {
     	int listSize = seats.size();
     	int result = -1; //Unsuccessful by default
     	boolean done = false;
@@ -42,11 +46,18 @@ public class Room {
     	return result;
     }
 	
+	/* (non-Javadoc)
+	 * @see RoomInterface#addGroup(Group)
+	 */
 	public void addGroup (Group customer) {
 		seats.add(0, customer);
 		occupancy +=  customer.getSize();
 	}
 	
+	/* (non-Javadoc)
+	 * @see RoomInterface#removeGroup(java.lang.String)
+	 */
+	@Override
 	public Group removeGroup (String customer) throws ListException {
 		Group result = null;
 		int index = sequentialSearch(customer);
@@ -63,10 +74,17 @@ public class Room {
 		return result;
 	}
     
+	/* (non-Javadoc)
+	 * @see RoomInterface#getAvailableSeats()
+	 */
+	@Override
 	public int getAvailableSeats() {
 		return (rows * cols) - occupancy;
 	}
 	
+	/* (non-Javadoc)
+	 * @see RoomInterface#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();

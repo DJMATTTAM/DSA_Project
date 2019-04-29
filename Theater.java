@@ -4,14 +4,14 @@
  * Last update: 04/29/19
  * Submitted:  04/29/19
  * Comment: test suite and sample run attached
- * @author: Matthew Tam and Chris Ancheta
+ * @author: Chris Ancheta
  * @version: 04/29/19
  */
 import java.util.StringJoiner;
 public class Theater // implements TheaterInterface
 {
-	private Room shazam;
-	private Room dumbo;
+	private RoomInterface shazam;
+	private RoomInterface dumbo;
 	private AscendinglyOrderedStringList names;
 	private QueueRA<Group> express;
 	private QueueRA<Group> reg1;
@@ -46,7 +46,7 @@ public class Theater // implements TheaterInterface
 		names.add(customer);
 	}
 
-	public void enter(Group customer) throws ListException {
+	public void enter(GroupInterface customer) throws ListException {
 		int reg1Size = reg1.size();
 		int reg2Size = reg2.size();
 		int expSize = express.size();
@@ -82,7 +82,7 @@ public class Theater // implements TheaterInterface
 	/*
 	 * First time serving
 	 */
-	public Group serveCustomer(int lineNum) {
+	public GroupInterface serveCustomer(int lineNum) {
 		lineToServe = lineNum;
 		return serveCustomer();
 
@@ -92,10 +92,10 @@ public class Theater // implements TheaterInterface
 	 * All subsequent times serving
 	 * 
 	 */
-	public Group serveCustomer() {
+	public GroupInterface serveCustomer() {
 		// Queues processed in the order Express->Reg1->Reg2->Express->
 		// if a queue is empty try the next one, if all are empty returns null
-		Group customer = null;
+		GroupInterface customer = null;
 		int attempts = 0;
 		while(attempts < 4)
 		try {
@@ -121,7 +121,7 @@ public class Theater // implements TheaterInterface
 		return customer;
 	}
 
-	public boolean purchaseTicket(Group customer, String movie) {
+	public boolean purchaseTicket(GroupInterface customer, String movie) {
 		boolean result = false;
 		switch (movie.toLowerCase()) {
 		case "shazam!":
@@ -142,8 +142,8 @@ public class Theater // implements TheaterInterface
 		return result;
 	}
 
-	public Group leave(String searchKey) {
-		Group result = null;
+	public GroupInterface leave(String searchKey) {
+		GroupInterface result = null;
 		int index = names.search(searchKey);
 		if (index >= 0) {
 			try {

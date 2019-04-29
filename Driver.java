@@ -4,7 +4,7 @@
  * Last update: 04/29/19
  * Submitted:  04/29/19
  * Comment: test suite and sample run attached
- * @author: Matthew Tam and Chris Ancheta
+ * @author: Chris Ancheta
  * @version: 04/29/19
  */
 
@@ -53,7 +53,7 @@ public class Driver {
 	// updating the user with results or errors
 	private static boolean select(Theater theTheater, boolean prompt) {
 		String selection = "";
-		Group customer = null;
+		GroupInterface customer = null;
 		int groupSize = 0;
 		boolean kids = false;
 
