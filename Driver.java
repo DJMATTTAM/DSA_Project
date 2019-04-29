@@ -1,12 +1,11 @@
-
 /*
  * Purpose: Data Structure and Algorithms Project
- * Status: Barely Started
- * Last update: 04/04/19
- * Submitted:  04/04/19
+ * Status: Complete
+ * Last update: 04/29/19
+ * Submitted:  04/29/19
  * Comment: test suite and sample run attached
  * @author: Matthew Tam and Chris Ancheta
- * @version: 04/04/19
+ * @version: 04/29/19
  */
 
 import java.io.*;

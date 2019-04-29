@@ -1,3 +1,12 @@
+/*
+ * Purpose: Data Structure and Algorithms Project
+ * Status: Complete
+ * Last update: 04/29/19
+ * Submitted:  04/29/19
+ * Comment: test suite and sample run attached
+ * @author: Matthew Tam and Chris Ancheta
+ * @version: 04/29/19
+ */
 import java.util.StringJoiner;
 public class Theater // implements TheaterInterface
 {
