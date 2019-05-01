@@ -36,7 +36,6 @@ public interface RoomInterface {
 	 * @author Matthew Tam
 	 * Assumes correct input
 	 * @param customer
-	 * @return
 	 * @throws ListException
 	 */
 	Group removeGroup(String customer) throws ListException;
